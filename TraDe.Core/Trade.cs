@@ -1,11 +1,11 @@
 namespace TraDe.Core;
 
-public class Trade
-{
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public Guid BuyOrderId { get; set; }
-    public Guid SellOrderId { get; set; }
-    public decimal Price { get; set; }
-    public decimal Quantity { get; set; }
-    public DateTime ExecutionTime { get; set; } = DateTime.UtcNow;
-}
+// Represents an immutable execution between a buyer and a seller.
+public record Trade(
+    Guid Id,
+    Guid BuyOrderId,
+    Guid SellOrderId,
+    decimal ExecutionPrice,
+    decimal ExecutionQuantity,
+    DateTime ExecutionTime
+);

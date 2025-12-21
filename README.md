@@ -2,7 +2,9 @@
 
 <div align="center">
 
-[![Tests](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml)
+[![Build & Tests](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml)
+![License](https://img.shields.io/github/license/OldManny/TraDe?color=blue)
+![.NET Version](https://img.shields.io/badge/.NET-8.0-blueviolet)
 
 </div>
 
@@ -24,8 +26,6 @@ Current focus:
 - FIFO order matching logic
 
 ## Roadmap
-The following phases describe the intended evolution of the project.
-
 - [x] Phase 1: Solution setup & core domain
 - [ ] Phase 2: In-memory order book logic
 - [ ] Phase 3: Concurrency layer (queue-based matching)
