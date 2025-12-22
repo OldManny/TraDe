@@ -2,32 +2,25 @@
 
 <div align="center">
 
-[![Build & Tests](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml)
-![License](https://img.shields.io/github/license/OldManny/TraDe?color=blue)
+[![Tests](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml/badge.svg)](https://github.com/OldManny/TraDe/actions/workflows/dotnet-ci.yml)
 ![.NET Version](https://img.shields.io/badge/.NET-8.0-blueviolet)
 
 </div>
 
-TraDe is a trading engine simulation built in C#/.NET, focused on deterministic order matching, concurrency safety, and data integrity.
+A high-performance, low-latency Limit Order Book (LOB) built with .NET 8, designed for thread-safe order matching and asynchronous persistence.
 
-The project models a simplified execution layer rather than trading strategies or pricing models.
+## Project Status: Phase 2
+This project is currently under active development following a 6-phase architecture plan.
 
-## Tech Stack
-- C# (.NET 8)
-- PostgreSQL
-- Docker / Docker Compose
-
-## Project Status
-**Phase 1 – Core Domain (In Progress)**
-
-Current focus:
-- Domain modelling
-- In-memory order book
-- FIFO order matching logic
+## Technical Architecture
+- **Language:** C# (.NET 8)
+- **Data Structures:** $O(\log n)$ Order Book matching using `SortedDictionary` and `LinkedList`.
+- **Concurrency:** Producer-Consumer pattern via `System.Threading.Channels`.
+- **Infrastructure:** Containerized PostgreSQL, managed via Terraform & Kubernetes.
 
 ## Roadmap
 - [x] Phase 1: Solution setup & core domain
-- [ ] Phase 2: In-memory order book logic
+- [x] Phase 2: In-memory order book logic
 - [ ] Phase 3: Concurrency layer (queue-based matching)
 - [ ] Phase 4: Async persistence (PostgreSQL)
 - [ ] Phase 5: API & market data simulation
