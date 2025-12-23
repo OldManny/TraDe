@@ -5,7 +5,7 @@ public class OrderBook
     private readonly SortedDictionary<decimal, LinkedList<Order>> _bids;
     private readonly SortedDictionary<decimal, LinkedList<Order>> _asks;
     
-    // Pro Improvement: Fast lookup for Cancellations O(1)
+    // Fast lookup for Cancellations O(1)
     private readonly Dictionary<Guid, Order> _orders = new();
 
     public OrderBook()

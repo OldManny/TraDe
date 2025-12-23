@@ -1,17 +1,30 @@
+using TraDe.Core;
+using TraDe.Server;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// 1. Register the OrderBook as a Singleton (Only one exists for the whole app)
+builder.Services.AddSingleton<OrderBook>();
+
+// 2. Register the Communication Channel
+builder.Services.AddSingleton<OrderProcessingChannel>();
+
+// 3. Register the Background Worker that runs the matching engine
+builder.Services.AddHostedService<MatchingEngineWorker>();
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+app.MapControllers();
 
+app.Run();
