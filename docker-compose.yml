@@ -1,11 +1,18 @@
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/dotnet:8.0
+    build: 
+      context: .
+      dockerfile: .devcontainer/Dockerfile
     volumes:
       - .:/workspace:cached
     network_mode: service:db
     user: vscode
     command: sleep infinity
+    # .NET configuration
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=localhost;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    env_file:
+      - .env
 
   db:
     image: postgres:16

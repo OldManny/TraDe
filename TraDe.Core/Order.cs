@@ -1,6 +1,6 @@
 namespace TraDe.Core;
 
-//Defines the side of the market.
+// Defines the side of the market.
 public enum OrderSide { Buy, Sell }
 
 
@@ -13,7 +13,7 @@ public class Order
     public Guid Id { get; init; } = Guid.NewGuid();
     public DateTime CreationTime { get; init; } = DateTime.UtcNow;
 
-    // Financial Data (Immutable: You can't change the price of an order once it's in the book)
+    // Financial Data (Immutable: These do not change after creation)
     public decimal Price { get; init; }
     public decimal InitialQuantity { get; init; }
     public OrderSide Side { get; init; }
@@ -26,17 +26,19 @@ public class Order
     private const decimal TickSize = 0.01m;
     private const decimal MinLotSize = 1.0m;
 
+    // EF Core requires a parameterless constructor
+    private Order() { }
 
-    public Order(decimal price, decimal quantity, OrderSide side)
+    public Order(decimal price, decimal initialQuantity, OrderSide side)
     {
         if (price <= 0) throw new ArgumentException("Price must be positive.");
-        if (quantity < MinLotSize) throw new ArgumentException($"Quantity must be at least {MinLotSize}.");
+        if (initialQuantity < MinLotSize) throw new ArgumentException($"Quantity must be at least {MinLotSize}.");
         if (price % TickSize != 0) throw new ArgumentException($"Price must be a multiple of {TickSize}.");
-        if (quantity % MinLotSize != 0) throw new ArgumentException($"Quantity must be a multiple of {MinLotSize}.");
+        if (initialQuantity % MinLotSize != 0) throw new ArgumentException($"Quantity must be a multiple of {MinLotSize}.");
 
         Price = price;
-        InitialQuantity = quantity;
-        RemainingQuantity = quantity;
+        InitialQuantity = initialQuantity;
+        RemainingQuantity = initialQuantity;
         Side = side;
         Status = OrderStatus.Accepted;
     }

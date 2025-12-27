@@ -1,16 +1,18 @@
 {
-  "name": "TraDe",
-  "dockerComposeFile": "../docker-compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspace",
-  "customizations": {
+    "name": "TraDe",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "customizations": {
     "vscode": {
-      "extensions": [
+        "extensions": [
         "ms-dotnettools.csdevkit",
         "ms-dotnettools.csharp",
-        "ms-azuretools.vscode-docker"
-      ]
+        "ms-azuretools.vscode-docker",
+        "ckolkman.vscode-postgres"
+        ]
     }
-  },
-  "remoteUser": "vscode"
+    },
+    "remoteUser": "vscode",
+    "postCreateCommand": "dotnet tool restore"
 }

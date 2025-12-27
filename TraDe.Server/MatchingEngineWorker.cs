@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using TraDe.Core;
 
 namespace TraDe.Server;
@@ -6,52 +8,62 @@ namespace TraDe.Server;
 public class MatchingEngineWorker(
     ILogger<MatchingEngineWorker> logger,
     OrderProcessingChannel processingChannel,
+    TradePersistenceChannel persistenceChannel,
     OrderBook orderBook) : BackgroundService
 {
     private readonly ILogger<MatchingEngineWorker> _logger = logger;
     private readonly OrderProcessingChannel _processingChannel = processingChannel;
+    private readonly TradePersistenceChannel _persistenceChannel = persistenceChannel;
     private readonly OrderBook _orderBook = orderBook;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Matching Engine Worker started.");
 
-        // This handles the shutdown signal
+        // Signal completion to the channel when the service is stopping
         stoppingToken.Register(() => _processingChannel.Complete());
 
-        // Stopwatching for performance benchmarking
         var sw = new Stopwatch();
 
         try
         {
-            // When Complete() is called, this loop finishes naturally after the last item
+            // Read until the channel is empty and marked as complete
             await foreach (var order in _processingChannel.Reader.ReadAllAsync(stoppingToken))
             {
-                sw.Restart();
-                
-                var trades = _orderBook.AddOrder(order);
-
-                sw.Stop();
-
-                // Only log matches or slow processing
-                if (trades.Count > 0)
+                try
                 {
-                    _logger.LogInformation("Processed Match in {Ticks} ticks. Trades generated: {Count}", 
-                        sw.ElapsedTicks, trades.Count);
+                    sw.Restart();
+                    var trades = _orderBook.AddOrder(order);
+                    sw.Stop();
+
+                    if (trades.Count > 0)
+                    {
+                        _logger.LogInformation("Match found in {Ticks} ticks. Processing persistence...", sw.ElapsedTicks);
+
+                        foreach (var trade in trades)
+                        {
+                            // Hand off to the Persistence Layer asynchronously
+                            await _persistenceChannel.AddTradeAsync(trade);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error matching order {OrderId}", order.Id);
                 }
 
-                // Exit if the app is shutting down and the queue is empty.
+                // Graceful drain: Check if it should exit after processing this order
                 if (stoppingToken.IsCancellationRequested && _processingChannel.Reader.Count == 0)
                     break;
             }
         }
         catch (OperationCanceledException)
         {
-            _logger.LogWarning("Matching Engine Worker forced to stop.");
+            // Expected during normal shutdown
         }
         finally
         {
-            _logger.LogInformation("Matching Engine Worker shutdown complete. All orders drained.");
+            _logger.LogInformation("Matching Engine Worker shutdown complete. All orders processed.");
         }
     }
 }

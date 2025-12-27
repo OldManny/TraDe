@@ -9,7 +9,7 @@
 
 A high-performance, low-latency Limit Order Book (LOB) built with .NET 8, designed for thread-safe order matching and asynchronous persistence.
 
-## Project Status: Phase 3
+## Project Status: Phase 5
 This project is currently under active development following a 6-phase architecture plan.
 
 ## Technical Architecture
@@ -22,7 +22,7 @@ This project is currently under active development following a 6-phase architect
 - [x] Phase 1: Solution setup & core domain
 - [x] Phase 2: In-memory order book logic
 - [x] Phase 3: Concurrency layer (queue-based matching)
-- [ ] Phase 4: Async persistence (PostgreSQL)
+- [x] Phase 4: Async persistence (PostgreSQL)
 - [ ] Phase 5: API & market data simulation
 - [ ] Phase 6: Containerized deployment & infrastructure (K8s/Terraform) 
 
