@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TraDe.Core;
 using TraDe.Server;
 using TraDe.Server.Data;
+using TraDe.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ builder.Services.AddSingleton<TradePersistenceChannel>();
 // Background Workers (Actors)
 builder.Services.AddHostedService<MatchingEngineWorker>();
 builder.Services.AddHostedService<PersistenceWorker>();
+builder.Services.AddHostedService<MarketDataReplayService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -36,6 +38,8 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // --- Middleware Pipeline ---
 
@@ -45,7 +49,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
 app.MapControllers();
-
 app.Run();
