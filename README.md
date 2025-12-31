@@ -80,30 +80,20 @@ Benchmarks are implemented using **BenchmarkDotNet** and run against the core ma
 
 ## System Architecture
 
-```text
-   ┌──────────────┐
-   │  HTTP API    │
-   │  (ASP.NET)   │
-   └──────┬───────┘
-          │
-          ▼
-┌────────────────────────┐
-│ OrderProcessingChannel │
-└─────────┬──────────────┘
-          ▼
-┌────────────────────────┐
-│ Matching Engine Actor  │
-│    (Single Thread)     │
-└─────────┬──────────────┘
-          ▼
-┌────────────────────────┐
-│ TradePersistenceChannel│
-└─────────┬──────────────┘
-          ▼
-┌────────────────────────┐
-│      PostgreSQL        │
-└────────────────────────┘
+<div align="center">
+
+```mermaid
+graph TD
+    A[HTTP API<br/>ASP.NET Core] --> B[OrderProcessingChannel<br/>System.Threading.Channels]
+    B --> C{Matching Engine Actor<br/>Single Threaded}
+    C --> D[TradePersistenceChannel<br/>Async Queue]
+    D --> E[(PostgreSQL<br/>Persistence)]
+
+    style C fill:#4caf50,stroke:#333,stroke-width:2px
+    style E fill:#69f,stroke:#333,stroke-width:2px
+</div>
 ```
+
 ---
 
 ## Infrastructure & Deployment
@@ -128,6 +118,7 @@ docker build -t trade-engine:v1 -f TraDe.Server/Dockerfile .
 cd infra
 terraform init
 terraform apply
+```
 
 Infrastructure is intentionally kept minimal to maintain clarity and focus on system behavior rather than platform complexity.
 
@@ -169,26 +160,6 @@ For a production deployment, additional considerations would include:
 - Network policies and RBAC
 - External secret management
 These are intentionally deferred to avoid obscuring the core system design.
-
----
-
-## Getting Started
-
-### Prerequisites
-- Docker Desktop with **Kubernetes** enabled.
-- Terraform.
-
-### Deployment
-```bash
-# 1. Prepare Environment
-cp .env.example .env
-
-# 2. Build the Image
-docker build -t trade-engine:v1 -f TraDe.Server/Dockerfile .
-
-# 3. Deploy via Terraform
-cd infra
-terraform init && terraform apply -auto-approve
 
 ---
 
