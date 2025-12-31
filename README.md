@@ -91,8 +91,8 @@ graph TD
 
     style C fill:#4caf50,stroke:#333,stroke-width:2px
     style E fill:#69f,stroke:#333,stroke-width:2px
-</div>
 ```
+</div>
 
 ---
 
