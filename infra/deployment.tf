@@ -14,6 +14,11 @@ resource "kubernetes_deployment" "trade_engine" {
         labels = { app = "trade-engine" }
       }
       spec {
+        # NOTE:
+        # Resource limits and securityContext are intentionally omitted
+        # to keep the deployment lightweight for local development.
+        # Production workloads should define CPU/memory limits and
+        # run as non-root.
         container {
           image             = "trade-engine:v1"
           name              = "engine"

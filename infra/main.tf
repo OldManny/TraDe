@@ -5,15 +5,23 @@ terraform {
       version = "~> 2.0"
     }
   }
+  # NOTE:
+  # A remote backend (S3/GCS/Azure Blob) would be recommended
+  # for multi-environment or team-based deployments
 }
 
+# NOTE:
+# In production, authentication would typically be handled via
+# cloud-native identity (IRSA, Workload Identity, etc.)
 provider "kubernetes" {
   config_path = "/home/vscode/.kube/config"
   host        = "https://host.docker.internal:6443"
   insecure    = true
 }
 
-# Secret for DB Credentials
+# NOTE:
+# In production, secrets should be sourced from an external
+# secret manager (Vault, AWS Secrets Manager, etc.)
 resource "kubernetes_secret" "db_creds" {
   metadata {
     name = "db-creds"

@@ -1,3 +1,6 @@
+# Docker Compose is used for local development only.
+# Kubernetes is the intended runtime environment.
+
 services:
   app:
     build: 
