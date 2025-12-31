@@ -2,6 +2,9 @@
     "name": "TraDe",
     "dockerComposeFile": "../docker-compose.yml",
     "service": "app",
+    "mounts": [
+        "source=${localEnv:HOME}/.kube,target=/home/vscode/.kube,type=bind,consistency=cached"
+    ],
     "workspaceFolder": "/workspace",
     "customizations": {
     "vscode": {
@@ -9,7 +12,8 @@
         "ms-dotnettools.csdevkit",
         "ms-dotnettools.csharp",
         "ms-azuretools.vscode-docker",
-        "ckolkman.vscode-postgres"
+        "ckolkman.vscode-postgres",
+        "hashicorp.terraform"
         ]
     }
     },
