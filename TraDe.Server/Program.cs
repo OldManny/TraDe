@@ -68,3 +68,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// The entry point to the integration tests
+public partial class Program { }
