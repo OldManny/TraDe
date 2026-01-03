@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using TraDe.Core;
 
 namespace TraDe.Server;
@@ -9,11 +7,13 @@ public class MatchingEngineWorker(
     ILogger<MatchingEngineWorker> logger,
     OrderProcessingChannel processingChannel,
     TradePersistenceChannel persistenceChannel,
+    TradeNotificationChannel notificationChannel,
     OrderBook orderBook) : BackgroundService
 {
     private readonly ILogger<MatchingEngineWorker> _logger = logger;
     private readonly OrderProcessingChannel _processingChannel = processingChannel;
     private readonly TradePersistenceChannel _persistenceChannel = persistenceChannel;
+    private readonly TradeNotificationChannel _notificationChannel = notificationChannel;
     private readonly OrderBook _orderBook = orderBook;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -42,8 +42,11 @@ public class MatchingEngineWorker(
 
                         foreach (var trade in trades)
                         {
-                            // Hand off to the Persistence Layer asynchronously
+                            // Hand off to Persistence
                             await _persistenceChannel.AddTradeAsync(trade);
+
+                            // Hand off to UI (Fire and forget style)
+                            await _notificationChannel.AddTradeAsync(trade);
                         }
                     }
                 }

@@ -2,11 +2,22 @@ using Microsoft.EntityFrameworkCore;
 using TraDe.Core;
 using TraDe.Server;
 using TraDe.Server.Data;
+using TraDe.Server.Hubs; 
 using TraDe.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Configuration & Services Registration ---
+
+// CORS: Allow Vite UI
+builder.Services.AddCors(options => {
+    options.AddPolicy("TradeGuiPolicy", policy => {
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); 
+    });
+});
 
 // Database Configuration (Uses Environment Variables if present)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -26,11 +37,16 @@ builder.Services.AddSingleton<OrderBook>();
 // High-Performance Channels (Decoupling)
 builder.Services.AddSingleton<OrderProcessingChannel>();
 builder.Services.AddSingleton<TradePersistenceChannel>();
+builder.Services.AddSingleton<TradeNotificationChannel>();
 
 // Background Workers (Actors)
 builder.Services.AddHostedService<MatchingEngineWorker>();
 builder.Services.AddHostedService<PersistenceWorker>();
-builder.Services.AddHostedService<MarketDataReplayService>();
+builder.Services.AddHostedService<MarketDataBroadcaster>();
+builder.Services.AddHostedService<MarketSimulationService>();
+// builder.Services.AddHostedService<MarketDataReplayService>();
+
+builder.Services.AddSignalR(); 
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -39,6 +55,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseCors("TradeGuiPolicy");
 app.UseMiddleware<ExceptionMiddleware>();
 
 // --- Middleware Pipeline ---
@@ -49,6 +66,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapHub<MarketDataHub>("/hubs/marketdata");
 app.MapControllers();
 
 // Auto-Migrate on Startup
