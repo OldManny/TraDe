@@ -59,7 +59,7 @@ Persistence is intentionally **decoupled** from the matching engine.
 - Batched writes to PostgreSQL via EF Core
 - Matching latency is unaffected by I/O
 
-This separation ensures that the hot path remains CPU-bound and predictable.
+This separation makes sure that the hot path remains CPU-bound and predictable.
 
 ---
 
@@ -69,8 +69,8 @@ This separation ensures that the hot path remains CPU-bound and predictable.
 
 - **Throughput:** ~13.2 million matches / second  
 - **Mean Latency:** ~75 nanoseconds  
-- **P95 Latency:** ~76 nanoseconds
-- **Max Latency**: ~78 nanosecond 
+- **P95 Latency:** ~75 nanoseconds
+- **Max Latency**: ~75 nanosecond 
 - **Memory Usage:** ~94 bytes per order  
 
 These results demonstrate the effectiveness of:
@@ -80,6 +80,9 @@ These results demonstrate the effectiveness of:
 
 Benchmarks are implemented using **BenchmarkDotNet** and run against the core matching logic in isolation.
 
+<div align="center">
+    <img src="docs/benchmark.png" alt="TraDe Dashboard" width="100%" />
+</div>
 ---
 
 ## System Architecture
