@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-    <img src="docs/dashboard.png" alt="TraDe Dashboard" width="100%" />
+    <img src="docs/demo.gif" alt="TraDe Dashboard" width="100%" />
 </div>
 
 ---
@@ -83,6 +83,7 @@ Benchmarks are implemented using **BenchmarkDotNet** and run against the core ma
 <div align="center">
     <img src="docs/benchmark.png" alt="TraDe Dashboard" width="100%" />
 </div>
+
 ---
 
 ## System Architecture
