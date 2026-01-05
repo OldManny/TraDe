@@ -7,11 +7,15 @@
 
 </div>
 
+<div align="center">
+    <img src="docs/dashboard.png" alt="TraDe Dashboard" width="100%" />
+</div>
+
 ---
 
 ## Overview
 
-**TraDe** is a high-performance, low-latency **Limit Order Book (LOB)** implemented in **.NET 8**, with deterministic execution, predictable tail latency and minimal allocation overhead.
+**TraDe** is a high-performance, low-latency **Limit Order Book (LOB)** implemented in **.NET 8**, featuring a real-time **React** dashboard.
 
 The project explores how far a **single-threaded matching engine**, combined with efficient data structures and asynchronous I/O boundaries, can be pushed before introducing horizontal complexity.
 
@@ -33,7 +37,7 @@ The matching engine follows an **actor-style execution model** using `System.Thr
 - No shared mutable state
 - Deterministic execution order
 
-This eliminates contention and GC pressure typically introduced by multi-threaded order matching.
+Eliminates contention and GC pressure typically introduced by multi-threaded order matching.
 
 ---
 
@@ -44,7 +48,7 @@ Orders are matched using strict **price-time priority**, implemented with:
 - FIFO ordering within each price level
 - O(log n) insertion and lookup
 
-This closely mirrors how real-world exchanges structure their core order books.
+Closely mirrors how real-world exchanges structure their core order books.
 
 ---
 
@@ -105,6 +109,7 @@ The system is fully containerized and deployed to **Kubernetes** using **Terrafo
 - Kubernetes
 - Terraform
 - PostgreSQL
+- Node.js
 
 ### Deployment Flow
 ```bash
@@ -118,6 +123,13 @@ docker build -t trade-engine:v1 -f TraDe.Server/Dockerfile .
 cd infra
 terraform init
 terraform apply
+
+# 4. Local Development
+dotnet run --project TraDe.Server
+
+cd trade-ui
+npm install
+npm run dev
 ```
 
 Infrastructure is intentionally kept minimal to maintain clarity and focus on system behavior rather than platform complexity.

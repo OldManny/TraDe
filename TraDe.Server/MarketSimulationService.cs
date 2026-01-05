@@ -26,8 +26,8 @@ public class MarketSimulationService : BackgroundService
         await Task.Delay(3000, stoppingToken);
         _logger.LogInformation("Starting Market Simulation (Market Maker)...");
 
-        // Safety: Tick every 100ms (10 updates/sec). 
-        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
+        // Tick every 500ms (2 updates/sec). 
+        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {

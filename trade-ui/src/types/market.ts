@@ -18,4 +18,5 @@ export interface MarketStats {
   volume: string;
   high24h: number;
   low24h: number;
+  spread?: string;
 }
