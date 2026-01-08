@@ -4,6 +4,7 @@ using TraDe.Server;
 using TraDe.Server.Data;
 using TraDe.Server.Hubs; 
 using TraDe.Server.Middleware;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseCors("TradeGuiPolicy");
+app.UseHttpMetrics(); 
 app.UseMiddleware<ExceptionMiddleware>();
 
 // --- Middleware Pipeline ---
@@ -68,6 +70,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapHub<MarketDataHub>("/hubs/marketdata");
 app.MapControllers();
+app.MapMetrics(); 
 
 // Auto-Migrate on Startup
 using (var scope = app.Services.CreateScope())

@@ -140,18 +140,21 @@ Infrastructure is intentionally kept minimal to maintain clarity and focus on sy
 
 ---
 
-## Observability (Planned)
+## Real-Time Observability
 
-Planned additions include:
-- Prometheus metrics for:
-    * Matching latency
-    * Queue depth
-    * Orders/sec
-    * Persistence lag
-- Grafana dashboards for real-time visualization
-- Optional OpenTelemetry tracing
+The system includes a fully decoupled monitoring pipeline using **Prometheus** and **Grafana**. 
+The dashboard below shows the engine sustaining **20,000 orders/second** with **sub-millisecond latency** (P99 ~41µs) while running inside a constrained Docker container.
 
-These will provide visibility into both performance and system health.
+<div align="center">
+    <img src="docs/grafana.png" alt="Grafana Dashboard" width="100%" />
+</div>
+
+**Key Metrics:**
+- **Throughput:** Measures the raw processing power of the matching engine (matches/sec).
+- **P99 Latency:** Tracking the execution time of the 99th percentile of orders.
+- **Queue Depth (Backpressure):** Monitors the channel depth between the HTTP API and the Matching Engine.
+
+> **Note:** To reproduce the load test shown above (20k OPS), switch to the `performance-test` branch which enables the high-frequency market simulation and DB bypass mode.
 
 ---
 
@@ -162,7 +165,7 @@ These will provide visibility into both performance and system health.
 - [x] Phase 4: Async persistence (PostgreSQL)
 - [x] Phase 5: API & market data simulation
 - [x] Phase 6: Infrastructure Orchestration (K8s/Terraform)
-- [ ] **Next:** Real-time Visualizations (SignalR & Grafana)
+- [x] Phase 7: Real-time Visualizations (SignalR & Grafana)
 
 ---
 

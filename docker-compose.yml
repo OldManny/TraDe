@@ -8,7 +8,6 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - .:/workspace:cached
-    network_mode: service:db
     user: vscode
     command: sleep infinity
     # .NET configuration
@@ -16,6 +15,28 @@ services:
       - ConnectionStrings__DefaultConnection=Host=localhost;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     env_file:
       - .env
+    ports:
+      - "8080:8080"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    depends_on:
+      - prometheus
 
   db:
     image: postgres:16
