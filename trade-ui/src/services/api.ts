@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5269/api/v1/orders';
+const API_URL = 'http://localhost:8080/api/v1/orders';
 
 export const placeOrder = async (side: 'buy' | 'sell', price: number, quantity: number) => {
   // Map 'buy' -> 0, 'sell' -> 1 for the C# Enum

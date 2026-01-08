@@ -12,7 +12,7 @@ services:
     command: sleep infinity
     # .NET configuration
     environment:
-      - ConnectionStrings__DefaultConnection=Host=localhost;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Host=db;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     env_file:
       - .env
     ports:
@@ -37,6 +37,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
     depends_on:
       - prometheus
+    volumes:
+      - grafana-storage:/var/lib/grafana
 
   db:
     image: postgres:16
@@ -47,3 +49,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5433:5432"
+  
+volumes:
+  grafana-storage:

@@ -21,27 +21,29 @@ public class PersistenceWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation("Persistence Worker started.");
+        var batch = new List<Core.Trade>();
+
+        // Trigger batch saves every 5 seconds
+        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(5));
+
         while (!stoppingToken.IsCancellationRequested)
         {
+            // Wait for a new trade or the 5-second timer
             while (_persistenceChannel.Reader.TryRead(out var trade))
             {
-                // --- BYPASS DB FOR DEMO ---
-                continue; 
-                
-                // batch.Add(trade);
-                // if (batch.Count >= BatchSize) break;
+                batch.Add(trade);
+                if (batch.Count >= BatchSize) break;
             }
 
-            /* 
             if (batch.Count > 0)
             {
                 await SaveBatchAsync(batch);
                 batch.Clear();
             }
-            */
-            
-            // Keep a small delay to not burn 100% CPU on an empty loop
-            await Task.Delay(1, stoppingToken); 
+
+            // Wait for the next cycle or a short delay to prevent CPU spinning
+            await Task.Delay(1000, stoppingToken); 
         }
     }
     private async Task SaveBatchAsync(List<Core.Trade> trades)

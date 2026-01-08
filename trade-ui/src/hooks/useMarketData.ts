@@ -38,7 +38,7 @@ export const useMarketData = () => {
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
-      .withUrl("http://localhost:5269/hubs/marketdata")
+      .withUrl("http://localhost:8080/hubs/marketdata")
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build();
